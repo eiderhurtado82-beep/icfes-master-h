@@ -232,6 +232,7 @@ export default function App() {
         return <CheckoutScreen onBack={() => handleNavigateModule('home')} />;
       case 'admin':
       case 'dashboard':
+      case 'admin-console':
         return (
           <AdminDashboardScreen
             onBack={() => handleNavigateModule('home')}
@@ -355,14 +356,19 @@ export default function App() {
                   <span>Acceder</span>
                 </button>
               )}
-              <button
-                onClick={() => handleNavigateModule('admin')}
-                title="Consola Master EdTech"
-                className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-[#0B2F64] text-xs font-bold transition-all cursor-pointer border border-slate-200"
-              >
-                <ShieldCheck className="w-3.5 h-3.5 text-[#0B2F64]" />
-                <span>Admin</span>
-              </button>
+              {/* Validación en la interfaz para Administrador Master */}
+              {(currentUser?.email === 'tu-correo-eiderhurtado82@gmail.com' ||
+                currentUser?.email === 'eiderhurtado82@gmail.com' ||
+                currentUser?.email === 'eider@educacity.com') && (
+                <button
+                  onClick={() => handleNavigateModule('admin-console')}
+                  title="Consola Master EdTech (Solo Admin)"
+                  className="hidden sm:inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-all cursor-pointer shadow-xs"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5 text-white" />
+                  <span>🛡️ Consola Master</span>
+                </button>
+              )}
               <button
                 onClick={() => handleNavigateModule('checkout')}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gradient-to-r from-[#00875A] to-[#00A86B] text-white text-xs font-bold shadow-xs hover:opacity-95 transition-all cursor-pointer"

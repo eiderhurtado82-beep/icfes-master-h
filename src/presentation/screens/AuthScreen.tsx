@@ -172,7 +172,7 @@ export function AuthScreen({ onLoginSuccess, onBack }: AuthScreenProps) {
           </button>
         </form>
 
-        <div className="text-center pt-2 border-t border-slate-100">
+        <div className="text-center pt-2 border-t border-slate-100 space-y-3">
           <button
             type="button"
             onClick={() => {
@@ -180,9 +180,21 @@ export function AuthScreen({ onLoginSuccess, onBack }: AuthScreenProps) {
               setErrorMsg('');
               setSuccessMsg('');
             }}
-            className="text-xs font-bold text-[#00875A] hover:underline cursor-pointer"
+            className="text-xs font-bold text-[#00875A] hover:underline cursor-pointer block w-full text-center"
           >
             {isSignUp ? '¿Ya tienes cuenta? Inicia sesión aquí' : '¿No tienes cuenta? Regístrate gratis'}
+          </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              setEmail('eiderhurtado82@gmail.com');
+              setFullName('Eider Felipe Hurtado');
+              setPassword('Admin123*');
+            }}
+            className="text-[11px] font-bold text-red-700 bg-red-50 hover:bg-red-100 border border-red-200 px-3 py-1.5 rounded-xl transition-all cursor-pointer inline-flex items-center gap-1.5"
+          >
+            <span>🛡️ Rellenar datos de Administrador Master</span>
           </button>
         </div>
       </div>
