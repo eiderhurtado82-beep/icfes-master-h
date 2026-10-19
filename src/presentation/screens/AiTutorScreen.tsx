@@ -133,8 +133,11 @@ export function AiTutorScreen({ onNavigateModule, initialPrompt }: AiTutorScreen
                   }`}
                 >
                   <p>{msg.text}</p>
-                  <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-slate-200/60 gap-3">
-                    {msg.sender === 'ai' ? (
+                  
+                  {msg.sender === 'ai' ? (
+                    <div className="flex items-center justify-between mt-2 pt-2 border-t border-slate-100">
+                      <span className="text-[10px] font-bold text-slate-400">Tutor Eider · Explicación Pedagógica</span>
+                      
                       <button
                         onClick={() => {
                           if (speakingId === msg.id) {
@@ -145,36 +148,17 @@ export function AiTutorScreen({ onNavigateModule, initialPrompt }: AiTutorScreen
                             handleSpeak(msg.text);
                           }
                         }}
-                        className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded-lg transition-all cursor-pointer ${
-                          speakingId === msg.id
-                            ? 'bg-[#00875A] text-white shadow-2xs animate-pulse'
-                            : 'text-[#0B2F64] hover:bg-slate-200 bg-slate-100'
-                        }`}
-                        title="Escuchar explicación con voz colombiana (es-CO)"
+                        className="flex items-center gap-1.5 px-3 py-1 bg-emerald-50 text-[#00875A] hover:bg-emerald-100 rounded-lg text-xs font-bold transition-all cursor-pointer"
+                        title="Escuchar explicación en voz alta"
                       >
-                        {speakingId === msg.id ? (
-                          <>
-                            <VolumeX className="w-3 h-3" />
-                            <span>Detener Audio</span>
-                          </>
-                        ) : (
-                          <>
-                            <Volume2 className="w-3 h-3 text-[#00875A]" />
-                            <span>Escuchar Explicación</span>
-                          </>
-                        )}
+                        {speakingId === msg.id ? '⏹️ Detener' : '🔊 Escuchar'}
                       </button>
-                    ) : (
-                      <div />
-                    )}
-                    <span
-                      className={`block text-[10px] ${
-                        msg.sender === 'user' ? 'text-blue-200' : 'text-slate-400'
-                      }`}
-                    >
+                    </div>
+                  ) : (
+                    <span className="block text-[10px] mt-1 text-right text-blue-200">
                       {msg.timestamp}
                     </span>
-                  </div>
+                  )}
                 </div>
               </motion.div>
             ))}
