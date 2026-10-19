@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { Eye, EyeOff, ShieldCheck, ArrowLeft, CheckCircle2, AlertCircle, Sparkles } from 'lucide-react';
+import { Eye, EyeOff, ArrowLeft } from 'lucide-react';
 
 export function AuthScreen({
   onLoginSuccess,
@@ -16,31 +16,11 @@ export function AuthScreen({
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const [successMsg, setSuccessMsg] = useState('');
 
   const handleAuth = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg('');
-    setSuccessMsg('');
-
-    // ACCESO DIRECTO DE ADMINISTRADOR (Bypass de límite de correo de Supabase)
-    if (email.toLowerCase().trim() === 'eiderhurtado82@gmail.com') {
-      const adminUser = {
-        id: 'admin-eider-001',
-        email: 'eiderhurtado82@gmail.com',
-        user_metadata: { full_name: fullName || 'Eider Felipe Hurtado Peña' },
-      };
-
-      // Intentar también en Supabase en segundo plano si la cuenta ya existe
-      supabase.auth.signInWithPassword({ email, password }).catch(() => {});
-
-      setTimeout(() => {
-        setLoading(false);
-        onLoginSuccess(adminUser);
-      }, 500);
-      return;
-    }
 
     try {
       if (isSignUp) {
@@ -63,7 +43,9 @@ export function AuthScreen({
             },
           ]);
         }
-        setSuccessMsg('¡Registro exitoso! Ya puedes iniciar sesión.');
+        if (typeof window !== 'undefined' && typeof window.alert === 'function') {
+          window.alert('¡Registro exitoso! Ya puedes iniciar sesión.');
+        }
         setIsSignUp(false);
       } else {
         const { data, error } = await supabase.auth.signInWithPassword({ email, password });
@@ -77,18 +59,8 @@ export function AuthScreen({
     }
   };
 
-  const handleFillAdmin = () => {
-    setEmail('eiderhurtado82@gmail.com');
-    setPassword('AdminMaster2026*');
-    setFullName('Eider Felipe Hurtado Peña');
-  };
-
   return (
-    <div className="max-w-md mx-auto mt-12 bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6 relative overflow-hidden">
-      {/* Subtle decorative background gradient */}
-      <div className="absolute -top-24 -right-24 w-48 h-48 bg-[#AFF2D4]/30 rounded-full blur-2xl pointer-events-none" />
-      <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-[#0B2F64]/10 rounded-full blur-2xl pointer-events-none" />
-
+    <div className="max-w-md mx-auto mt-12 bg-white p-8 rounded-3xl border border-slate-200 shadow-sm space-y-6 relative">
       {onBack && (
         <button
           onClick={onBack}
@@ -99,9 +71,8 @@ export function AuthScreen({
         </button>
       )}
 
-      <div className="text-center space-y-2 relative">
-        <span className="inline-flex items-center gap-1.5 text-[10px] font-bold text-[#00875A] uppercase tracking-wider bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
-          <Sparkles className="w-3 h-3 text-[#00875A]" />
+      <div className="text-center space-y-2">
+        <span className="text-[10px] font-bold text-[#00875A] uppercase tracking-wider bg-emerald-50 px-3 py-1 rounded-full border border-emerald-100">
           ICFES MASTER H 2.5
         </span>
         <h2 className="text-2xl font-black text-[#0B2F64]">
@@ -112,17 +83,9 @@ export function AuthScreen({
         </p>
       </div>
 
-      {successMsg && (
-        <div className="p-3.5 bg-emerald-50 text-emerald-800 text-xs rounded-xl font-medium border border-emerald-200 flex items-start gap-2 animate-in fade-in">
-          <CheckCircle2 className="w-4 h-4 text-[#00875A] shrink-0 mt-0.5" />
-          <span>{successMsg}</span>
-        </div>
-      )}
-
       {errorMsg && (
-        <div className="p-3 bg-red-50 text-red-700 text-xs rounded-xl font-medium border border-red-200 flex items-start gap-2 animate-in fade-in">
-          <AlertCircle className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
-          <span>{errorMsg}</span>
+        <div className="p-3 bg-red-50 text-red-700 text-xs rounded-xl font-medium border border-red-200">
+          {errorMsg}
         </div>
       )}
 
@@ -177,38 +140,15 @@ export function AuthScreen({
         <button
           type="submit"
           disabled={loading}
-          className="w-full py-3.5 bg-[#0B2F64] text-white font-bold rounded-xl text-sm shadow-sm hover:bg-blue-900 transition-all cursor-pointer flex items-center justify-center gap-2"
+          className="w-full py-3.5 bg-[#0B2F64] text-white font-bold rounded-xl text-sm shadow-sm hover:bg-blue-900 transition-all cursor-pointer"
         >
-          {loading ? (
-            <span className="inline-flex items-center gap-2">
-              <span className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-              Procesando...
-            </span>
-          ) : isSignUp ? (
-            'Registrarse en la Plataforma'
-          ) : (
-            'Entrar a la Plataforma'
-          )}
-        </button>
-
-        {/* Botón rápido para rellenar y entrar como Administrador */}
-        <button
-          type="button"
-          onClick={handleFillAdmin}
-          className="w-full py-2.5 bg-red-50 text-red-700 hover:bg-red-100 font-bold rounded-xl text-xs flex items-center justify-center gap-2 transition-all cursor-pointer border border-red-200 shadow-2xs"
-        >
-          <ShieldCheck className="w-4 h-4" />
-          🛡️ Rellenar datos de Administrador Master
+          {loading ? 'Procesando...' : isSignUp ? 'Registrarse en la Plataforma' : 'Entrar a la Plataforma'}
         </button>
       </form>
 
       <div className="text-center pt-2">
         <button
-          onClick={() => {
-            setIsSignUp(!isSignUp);
-            setErrorMsg('');
-            setSuccessMsg('');
-          }}
+          onClick={() => setIsSignUp(!isSignUp)}
           className="text-xs font-bold text-[#00875A] hover:underline cursor-pointer"
         >
           {isSignUp ? '¿Ya tienes cuenta? Inicia sesión aquí' : '¿No tienes cuenta? Regístrate gratis'}
