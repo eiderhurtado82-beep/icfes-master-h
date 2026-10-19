@@ -47,7 +47,9 @@ export default function App() {
   const [history, setHistory] = useState<ExamSession[]>(() => examRepository.getExamHistory());
   const [tutorInitialPrompt, setTutorInitialPrompt] = useState<string | undefined>(undefined);
   const [session, setSession] = useState<Session | null>(null);
-  const currentUser = session?.user ?? null;
+  const [adminBypassUser, setAdminBypassUser] = useState<any>(null);
+  const currentUser = adminBypassUser || session?.user || null;
+  const hasValidSession = Boolean(session || adminBypassUser);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -172,7 +174,7 @@ export default function App() {
       'cuestionario',
     ];
 
-    if (!session && protectedScreens.includes(currentTab)) {
+    if (!hasValidSession && protectedScreens.includes(currentTab)) {
       return (
         <div className="max-w-md mx-auto mt-16 p-8 bg-white rounded-3xl border border-slate-200 shadow-sm text-center space-y-6 animate-in fade-in">
           <div className="w-16 h-16 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-inner">
@@ -335,7 +337,12 @@ export default function App() {
       case 'registro':
         return (
           <AuthScreen
-            onLoginSuccess={() => handleNavigateModule('home')}
+            onLoginSuccess={(userObj) => {
+              if (userObj) {
+                setAdminBypassUser(userObj);
+              }
+              handleNavigateModule('home');
+            }}
             onBack={() => handleNavigateModule('home')}
           />
         );
@@ -415,6 +422,7 @@ export default function App() {
                     onClick={async () => {
                       await supabase.auth.signOut();
                       setSession(null);
+                      setAdminBypassUser(null);
                     }}
                     title="Cerrar sesión"
                     className="p-1 hover:text-red-600 transition-colors cursor-pointer ml-1"
