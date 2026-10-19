@@ -12,9 +12,12 @@ import {
   Battery,
   AlertTriangle,
   ShieldCheck,
+  User,
+  LogOut,
 } from 'lucide-react';
 import { AreaType, ExamMode, ExamSession } from './domain/models/ExamTypes';
 import { examRepository } from './data/ExamRepositoryImpl';
+import { supabase } from './lib/supabase';
 import { M3TopAppBar } from './presentation/components/m3/M3TopAppBar';
 import { M3NavigationBar, M3NavItem } from './presentation/components/m3/M3NavigationBar';
 import { DeviceFrameToggle } from './presentation/components/m3/DeviceFrameToggle';
@@ -32,6 +35,7 @@ import { MasterProScreen } from './presentation/screens/MasterProScreen';
 import { ExamSimulatorScreen } from './presentation/screens/ExamSimulatorScreen';
 import { AdmissionPrognosisScreen } from './presentation/screens/AdmissionPrognosisScreen';
 import { GamificationScreen } from './presentation/screens/GamificationScreen';
+import { AuthScreen } from './presentation/screens/AuthScreen';
 import { PWAInstallButton } from './presentation/components/pwa/PWAInstallButton';
 import { OfflineIndicator } from './presentation/components/pwa/OfflineIndicator';
 
@@ -41,6 +45,23 @@ export default function App() {
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [history, setHistory] = useState<ExamSession[]>(() => examRepository.getExamHistory());
   const [tutorInitialPrompt, setTutorInitialPrompt] = useState<string | undefined>(undefined);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setCurrentUser(session?.user ?? null);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setCurrentUser(session?.user ?? null);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
 
   // Active simulacro parameters
   const [simulacroMode, setSimulacroMode] = useState<ExamMode>('simulacro_completo');
@@ -147,6 +168,8 @@ export default function App() {
             onOpenAdmin={() => handleNavigateModule('admin')}
             onOpenMasterPro={() => handleNavigateModule('masterpro')}
             onOpenExamSimulator={() => handleNavigateModule('simulador_real')}
+            onOpenAuth={() => handleNavigateModule('auth')}
+            currentUser={currentUser}
             history={history}
           />
         );
@@ -250,6 +273,15 @@ export default function App() {
             onNavigateModule={handleNavigateModule}
           />
         );
+      case 'auth':
+      case 'login':
+      case 'registro':
+        return (
+          <AuthScreen
+            onLoginSuccess={() => handleNavigateModule('home')}
+            onBack={() => handleNavigateModule('home')}
+          />
+        );
       case 'arquitectura':
         return <ArchitectureScreen />;
       default:
@@ -297,6 +329,32 @@ export default function App() {
           onSelectNav={handleNavigateModule}
           actions={
             <div className="flex items-center gap-2">
+              {currentUser ? (
+                <div className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 border border-slate-200 text-xs font-semibold text-[#0B2F64]">
+                  <User className="w-3.5 h-3.5 text-[#00875A]" />
+                  <span className="max-w-[100px] truncate">
+                    {currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0]}
+                  </span>
+                  <button
+                    onClick={async () => {
+                      await supabase.auth.signOut();
+                      setCurrentUser(null);
+                    }}
+                    title="Cerrar sesión"
+                    className="p-1 hover:text-red-600 transition-colors cursor-pointer ml-1"
+                  >
+                    <LogOut className="w-3 h-3" />
+                  </button>
+                </div>
+              ) : (
+                <button
+                  onClick={() => handleNavigateModule('auth')}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-[#0B2F64] text-xs font-bold transition-all cursor-pointer border border-slate-200"
+                >
+                  <User className="w-3.5 h-3.5 text-[#00875A]" />
+                  <span>Acceder</span>
+                </button>
+              )}
               <button
                 onClick={() => handleNavigateModule('admin')}
                 title="Consola Master EdTech"

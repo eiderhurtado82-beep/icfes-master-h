@@ -15,6 +15,7 @@ import {
   AlertTriangle,
   ShieldCheck,
   Bot,
+  User,
 } from 'lucide-react';
 import { AreaType, ExamSession } from '../../domain/models/ExamTypes';
 import { OFFICIAL_AREAS } from '../../data/ExamRepositoryImpl';
@@ -37,6 +38,8 @@ export interface HomeScreenProps {
   onOpenAdmin?: () => void;
   onOpenMasterPro?: () => void;
   onOpenExamSimulator?: () => void;
+  onOpenAuth?: () => void;
+  currentUser?: any;
   history?: ExamSession[];
 }
 
@@ -54,6 +57,8 @@ export function HomeScreen({
   onOpenAdmin,
   onOpenMasterPro,
   onOpenExamSimulator,
+  onOpenAuth,
+  currentUser,
   history = [],
 }: HomeScreenProps) {
   // Handlers compatibles
@@ -101,6 +106,19 @@ export function HomeScreen({
         </div>
 
         <div className="flex items-center gap-2 w-full sm:w-auto justify-end flex-wrap">
+          {onOpenAuth && (
+            <button
+              onClick={onOpenAuth}
+              className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#F7F9FC] text-[#0B2F64] hover:bg-slate-100 border border-slate-200 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+            >
+              <User className="w-3.5 h-3.5 text-[#00875A]" />
+              <span>
+                {currentUser
+                  ? (currentUser.user_metadata?.full_name || currentUser.email?.split('@')[0] || 'Mi Cuenta')
+                  : 'Iniciar Sesión'}
+              </span>
+            </button>
+          )}
           {onOpenMasterPro && (
             <button
               onClick={onOpenMasterPro}
