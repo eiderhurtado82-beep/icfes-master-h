@@ -32,6 +32,8 @@ import { MasterProScreen } from './presentation/screens/MasterProScreen';
 import { ExamSimulatorScreen } from './presentation/screens/ExamSimulatorScreen';
 import { AdmissionPrognosisScreen } from './presentation/screens/AdmissionPrognosisScreen';
 import { GamificationScreen } from './presentation/screens/GamificationScreen';
+import { PWAInstallButton } from './presentation/components/pwa/PWAInstallButton';
+import { OfflineIndicator } from './presentation/components/pwa/OfflineIndicator';
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState<string>('home');
@@ -310,6 +312,7 @@ export default function App() {
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Plan Pro</span>
               </button>
+              <PWAInstallButton />
               <DeviceFrameToggle
                 isMobileFrame={isMobileFrame}
                 onToggle={() => setIsMobileFrame(!isMobileFrame)}
@@ -348,6 +351,9 @@ export default function App() {
           onSelect={handleNavigateModule}
           className={isMobileFrame ? 'absolute bottom-0' : ''}
         />
+
+        {/* PWA Offline Notification Indicator */}
+        <OfflineIndicator />
       </div>
     </div>
   );

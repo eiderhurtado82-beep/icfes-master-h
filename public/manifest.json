@@ -1,0 +1,21 @@
+{
+  "name": "ICFES MASTER H 2.5",
+  "short_name": "ICFES Master",
+  "description": "Plataforma EdTech de preparación Saber 11 y simuladores oficiales",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B2F64",
+  "theme_color": "#0B2F64",
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

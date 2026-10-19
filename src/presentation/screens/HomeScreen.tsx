@@ -21,6 +21,7 @@ import { OFFICIAL_AREAS } from '../../data/ExamRepositoryImpl';
 import { M3Card } from '../components/m3/M3Card';
 import { M3Button } from '../components/m3/M3Button';
 import { M3LinearProgress } from '../components/m3/M3ProgressBar';
+import { PWAInstallButton } from '../components/pwa/PWAInstallButton';
 
 export interface HomeScreenProps {
   onStartExam?: () => void;
@@ -128,6 +129,7 @@ export function HomeScreen({
               <span>Obtener Plan Pro</span>
             </button>
           )}
+          <PWAInstallButton />
         </div>
       </motion.div>
 
