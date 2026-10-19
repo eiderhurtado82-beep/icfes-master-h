@@ -463,11 +463,10 @@ export default function App() {
               </button>
               <button
                 onClick={handleShareApp}
-                title="Compartir ICFES MASTER H 2.5"
-                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-[#0B2F64] text-xs font-bold transition-all cursor-pointer border border-slate-200"
+                className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
+                title="Compartir plataforma"
               >
-                <Share2 className="w-3.5 h-3.5 text-[#00875A]" />
-                <span className="hidden md:inline">Compartir</span>
+                📤 Compartir
               </button>
               <PWAInstallButton />
               <DeviceFrameToggle

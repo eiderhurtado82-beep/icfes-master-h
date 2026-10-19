@@ -170,11 +170,10 @@ export function HomeScreen({
           )}
           <button
             onClick={handleShareApp}
-            title="Compartir ICFES MASTER H 2.5"
-            className="px-3 py-2 rounded-xl text-xs font-bold bg-[#E8F0FE] text-[#0B2F64] hover:bg-[#d5e4fb] transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs border border-blue-100"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl text-xs font-bold transition-all cursor-pointer"
+            title="Compartir plataforma"
           >
-            <Share2 className="w-3.5 h-3.5 text-[#0B2F64]" />
-            <span className="hidden sm:inline">Compartir</span>
+            📤 Compartir
           </button>
           <PWAInstallButton />
         </div>
