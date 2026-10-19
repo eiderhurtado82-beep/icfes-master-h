@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../../lib/supabase';
-import { ArrowLeft, CheckCircle2, AlertCircle, Sparkles, Lock, Mail, User } from 'lucide-react';
+import { ArrowLeft, CheckCircle2, AlertCircle, Sparkles, Lock, Mail, User, Eye, EyeOff } from 'lucide-react';
 
 interface AuthScreenProps {
   onLoginSuccess: () => void;
@@ -12,6 +12,7 @@ export function AuthScreen({ onLoginSuccess, onBack }: AuthScreenProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [successMsg, setSuccessMsg] = useState('');
@@ -144,14 +145,24 @@ export function AuthScreen({ onLoginSuccess, onBack }: AuthScreenProps) {
               <Lock className="w-3 h-3 text-slate-400" />
               Contraseña
             </label>
-            <input
-              type="password"
-              required
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="••••••••"
-              className="w-full p-3 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#0B2F64] focus:ring-2 focus:ring-[#0B2F64]/10 transition-all bg-slate-50/50 focus:bg-white"
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="w-full p-3 pr-10 rounded-xl border border-slate-200 text-sm focus:outline-none focus:border-[#0B2F64] focus:ring-2 focus:ring-[#0B2F64]/10 transition-all bg-slate-50/50 focus:bg-white"
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 focus:outline-none cursor-pointer"
+                title={showPassword ? 'Ocultar contraseña' : 'Ver contraseña'}
+              >
+                {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+              </button>
+            </div>
           </div>
 
           <button
