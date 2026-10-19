@@ -99,11 +99,53 @@ const INITIAL_QUESTIONS: AdminQuestionItem[] = [
 ];
 
 interface AdminDashboardScreenProps {
+  user?: any;
   onBack?: () => void;
   onNavigateModule?: (module: string) => void;
 }
 
-export function AdminDashboardScreen({ onBack, onNavigateModule }: AdminDashboardScreenProps = {}) {
+export function AdminDashboardScreen({ user, onBack, onNavigateModule }: AdminDashboardScreenProps = {}) {
+  // Correo de administrador oficial
+  const ADMIN_EMAILS = [
+    'tu-correo-eiderhurtado82@gmail.com',
+    'eiderhurtado82@gmail.com',
+    'eider@educacity.com',
+  ];
+
+  const isAuthorized = user?.email && ADMIN_EMAILS.includes(user.email.toLowerCase());
+
+  if (!isAuthorized) {
+    return (
+      <div className="max-w-md mx-auto mt-20 text-center p-8 bg-red-50 rounded-3xl border border-red-200 space-y-4 shadow-sm animate-in fade-in">
+        <div className="w-14 h-14 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-2xl shadow-inner">
+          🛡️
+        </div>
+        <h2 className="text-xl font-black text-red-700">Acceso Denegado</h2>
+        <p className="text-xs text-red-600 leading-relaxed">
+          No tienes permisos de administrador para ver esta sección. Esta zona es exclusiva para la gestión de pagos y licencias.
+        </p>
+        <div className="pt-2 flex flex-col gap-2">
+          {onBack && (
+            <button 
+              onClick={onBack}
+              className="px-6 py-2.5 bg-[#0B2F64] text-white text-xs font-bold rounded-xl hover:bg-[#071f43] transition-all cursor-pointer shadow-sm"
+            >
+              Volver al Inicio
+            </button>
+          )}
+          {onNavigateModule && (
+            <button
+              onClick={() => onNavigateModule('auth')}
+              className="text-xs font-bold text-[#00875A] hover:underline cursor-pointer pt-1"
+            >
+              ¿Eres administrador? Iniciar sesión con cuenta autorizada
+            </button>
+          )}
+        </div>
+      </div>
+    );
+  }
+
   const [activeTab, setActiveTab] = useState<'payments' | 'questions' | 'stats'>('payments');
   const [payments, setPayments] = useState<PendingPayment[]>(MOCK_PENDING_PAYMENTS);
   const [approvedCount, setApprovedCount] = useState<number>(21);
@@ -617,3 +659,6 @@ export function AdminDashboardScreen({ onBack, onNavigateModule }: AdminDashboar
     </div>
   );
 }
+
+export const AdminConsoleScreen = AdminDashboardScreen;
+

@@ -235,6 +235,7 @@ export default function App() {
       case 'admin-console':
         return (
           <AdminDashboardScreen
+            user={currentUser}
             onBack={() => handleNavigateModule('home')}
             onNavigateModule={handleNavigateModule}
           />
