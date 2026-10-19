@@ -103,6 +103,11 @@ export default function App() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const isMasterAdmin =
+    currentUser?.email === 'eiderhurtado82@gmail.com' ||
+    currentUser?.email === 'tu-correo-eiderhurtado82@gmail.com' ||
+    currentUser?.email === 'eider@educacity.com';
+
   const navItems: M3NavItem[] = [
     {
       id: 'home',
@@ -139,11 +144,16 @@ export default function App() {
       label: 'Banco Errores',
       icon: <AlertTriangle className="w-5 h-5" />,
     },
-    {
-      id: 'arquitectura',
-      label: 'Arquitectura',
-      icon: <Layers className="w-5 h-5" />,
-    },
+    // El módulo de Arquitectura solo se muestra si eres el administrador
+    ...(isMasterAdmin
+      ? [
+          {
+            id: 'arquitectura',
+            label: 'Arquitectura',
+            icon: <Layers className="w-5 h-5" />,
+          },
+        ]
+      : []),
   ];
 
   // Screen routing
@@ -169,6 +179,7 @@ export default function App() {
             onOpenMasterPro={() => handleNavigateModule('masterpro')}
             onOpenExamSimulator={() => handleNavigateModule('simulador_real')}
             onOpenAuth={() => handleNavigateModule('auth')}
+            onOpenArchitecture={() => handleNavigateModule('arquitectura')}
             currentUser={currentUser}
             history={history}
           />
@@ -285,6 +296,25 @@ export default function App() {
           />
         );
       case 'arquitectura':
+        if (!isMasterAdmin) {
+          return (
+            <div className="max-w-md mx-auto mt-20 text-center p-8 bg-red-50 rounded-3xl border border-red-200 space-y-4 shadow-sm animate-in fade-in">
+              <div className="w-14 h-14 bg-red-100 text-red-600 rounded-full flex items-center justify-center mx-auto text-2xl shadow-inner">
+                <Layers className="w-7 h-7 text-red-600" />
+              </div>
+              <h2 className="text-xl font-black text-red-700">Módulo Restringido</h2>
+              <p className="text-xs text-red-600 leading-relaxed">
+                El módulo de Arquitectura es exclusivo para el administrador del sistema (eiderhurtado82@gmail.com).
+              </p>
+              <button 
+                onClick={() => handleNavigateModule('home')}
+                className="px-6 py-2.5 bg-[#0B2F64] text-white text-xs font-bold rounded-xl hover:bg-[#071f43] transition-all cursor-pointer shadow-sm"
+              >
+                Volver al Inicio
+              </button>
+            </div>
+          );
+        }
         return <ArchitectureScreen />;
       default:
         return null;

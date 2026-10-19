@@ -16,6 +16,7 @@ import {
   ShieldCheck,
   Bot,
   User,
+  Layers,
 } from 'lucide-react';
 import { AreaType, ExamSession } from '../../domain/models/ExamTypes';
 import { OFFICIAL_AREAS } from '../../data/ExamRepositoryImpl';
@@ -39,6 +40,7 @@ export interface HomeScreenProps {
   onOpenMasterPro?: () => void;
   onOpenExamSimulator?: () => void;
   onOpenAuth?: () => void;
+  onOpenArchitecture?: () => void;
   currentUser?: any;
   history?: ExamSession[];
 }
@@ -58,6 +60,7 @@ export function HomeScreen({
   onOpenMasterPro,
   onOpenExamSimulator,
   onOpenAuth,
+  onOpenArchitecture,
   currentUser,
   history = [],
 }: HomeScreenProps) {
@@ -139,6 +142,19 @@ export function HomeScreen({
             >
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>🛡️ Consola Master (Solo Admin)</span>
+            </button>
+          )}
+          {/* El módulo de Arquitectura solo se muestra si eres el administrador */}
+          {(currentUser?.email === 'eiderhurtado82@gmail.com' ||
+            currentUser?.email === 'tu-correo-eiderhurtado82@gmail.com' ||
+            currentUser?.email === 'eider@educacity.com') && onOpenArchitecture && (
+            <button 
+              onClick={onOpenArchitecture}
+              className="px-3.5 py-2 rounded-xl text-xs font-bold bg-[#E1E7F0] text-[#0B2F64] hover:bg-slate-200 border border-slate-300 transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs"
+              title="Arquitectura Hexagonal del Sistema"
+            >
+              <Layers className="w-3.5 h-3.5 text-[#0B2F64]" />
+              <span>Arquitectura</span>
             </button>
           )}
           {onOpenCheckout && (
