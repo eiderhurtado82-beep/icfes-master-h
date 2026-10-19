@@ -17,7 +17,9 @@ import {
   Bot,
   User,
   Layers,
+  Share2,
 } from 'lucide-react';
+import { handleShareApp } from '../../lib/shareApp';
 import { AreaType, ExamSession } from '../../domain/models/ExamTypes';
 import { OFFICIAL_AREAS } from '../../data/ExamRepositoryImpl';
 import { M3Card } from '../components/m3/M3Card';
@@ -166,6 +168,14 @@ export function HomeScreen({
               <span>Obtener Plan Pro</span>
             </button>
           )}
+          <button
+            onClick={handleShareApp}
+            title="Compartir ICFES MASTER H 2.5"
+            className="px-3 py-2 rounded-xl text-xs font-bold bg-[#E8F0FE] text-[#0B2F64] hover:bg-[#d5e4fb] transition-all flex items-center gap-1.5 cursor-pointer shadow-2xs border border-blue-100"
+          >
+            <Share2 className="w-3.5 h-3.5 text-[#0B2F64]" />
+            <span className="hidden sm:inline">Compartir</span>
+          </button>
           <PWAInstallButton />
         </div>
       </motion.div>

@@ -14,7 +14,9 @@ import {
   ShieldCheck,
   User,
   LogOut,
+  Share2,
 } from 'lucide-react';
+import { handleShareApp } from './lib/shareApp';
 import { AreaType, ExamMode, ExamSession } from './domain/models/ExamTypes';
 import { examRepository } from './data/ExamRepositoryImpl';
 import { supabase } from './lib/supabase';
@@ -458,6 +460,14 @@ export default function App() {
               >
                 <Sparkles className="w-3.5 h-3.5" />
                 <span>Plan Pro</span>
+              </button>
+              <button
+                onClick={handleShareApp}
+                title="Compartir ICFES MASTER H 2.5"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-slate-100 hover:bg-slate-200 text-[#0B2F64] text-xs font-bold transition-all cursor-pointer border border-slate-200"
+              >
+                <Share2 className="w-3.5 h-3.5 text-[#00875A]" />
+                <span className="hidden md:inline">Compartir</span>
               </button>
               <PWAInstallButton />
               <DeviceFrameToggle
