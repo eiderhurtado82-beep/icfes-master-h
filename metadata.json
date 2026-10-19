@@ -1,0 +1,6 @@
+{
+  "name": "ICFES MASTER - Preparación Saber 11",
+  "description": "Aplicación educativa para estudiantes colombianos que se preparan para el examen ICFES Saber 11 con diseño Material 3, simulacros oficiales, prácticas guiadas y análisis de puntaje.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
