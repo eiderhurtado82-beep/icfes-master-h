@@ -18,6 +18,7 @@ import {
 import { AreaType, ExamMode, ExamSession } from './domain/models/ExamTypes';
 import { examRepository } from './data/ExamRepositoryImpl';
 import { supabase } from './lib/supabase';
+import type { Session } from '@supabase/supabase-js';
 import { M3TopAppBar } from './presentation/components/m3/M3TopAppBar';
 import { M3NavigationBar, M3NavItem } from './presentation/components/m3/M3NavigationBar';
 import { DeviceFrameToggle } from './presentation/components/m3/DeviceFrameToggle';
@@ -45,22 +46,21 @@ export default function App() {
   const [isScrolled, setIsScrolled] = useState<boolean>(false);
   const [history, setHistory] = useState<ExamSession[]>(() => examRepository.getExamHistory());
   const [tutorInitialPrompt, setTutorInitialPrompt] = useState<string | undefined>(undefined);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const currentUser = session?.user ?? null;
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
-      setCurrentUser(session?.user ?? null);
+      setSession(session);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setCurrentUser(session?.user ?? null);
+      setSession(session);
     });
 
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => subscription.unsubscribe();
   }, []);
 
   // Active simulacro parameters
@@ -338,7 +338,7 @@ export default function App() {
                   <button
                     onClick={async () => {
                       await supabase.auth.signOut();
-                      setCurrentUser(null);
+                      setSession(null);
                     }}
                     title="Cerrar sesión"
                     className="p-1 hover:text-red-600 transition-colors cursor-pointer ml-1"
