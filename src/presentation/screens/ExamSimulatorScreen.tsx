@@ -11,8 +11,11 @@ import {
   Check,
   XCircle,
   HelpCircle,
-  ArrowRight
+  ArrowRight,
+  Volume2,
+  VolumeX,
 } from 'lucide-react';
+import { handleSpeak, stopSpeak } from '../../lib/speech';
 
 export interface ExamQuestion {
   id: string;
@@ -90,6 +93,13 @@ export function ExamSimulatorScreen({ onBack, onNavigateModule, onFinish }: Exam
   const [isFinished, setIsFinished] = useState(false);
   const [secondsRemaining, setSecondsRemaining] = useState(3 * 3600 + 59 * 60 + 45); // 03:59:45
   const [showReview, setShowReview] = useState(false);
+  const [isAudioPlaying, setIsAudioPlaying] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      stopSpeak();
+    };
+  }, []);
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -112,6 +122,8 @@ export function ExamSimulatorScreen({ onBack, onNavigateModule, onFinish }: Exam
   };
 
   const handleNext = () => {
+    stopSpeak();
+    setIsAudioPlaying(false);
     if (currentIndex < MOCK_EXAM_QUESTIONS.length - 1) {
       setCurrentIndex(prev => prev + 1);
     } else {
@@ -126,6 +138,8 @@ export function ExamSimulatorScreen({ onBack, onNavigateModule, onFinish }: Exam
   };
 
   const handlePrev = () => {
+    stopSpeak();
+    setIsAudioPlaying(false);
     if (currentIndex > 0) {
       setCurrentIndex(prev => prev - 1);
     }
@@ -182,9 +196,40 @@ export function ExamSimulatorScreen({ onBack, onNavigateModule, onFinish }: Exam
           </div>
 
           <div className="space-y-2">
-            <span className="font-mono text-xs font-bold bg-[#DCE4F9] text-[#0B2F64] px-2.5 py-1 rounded-md">
-              Reactivo #{currentQ.id}
-            </span>
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-xs font-bold bg-[#DCE4F9] text-[#0B2F64] px-2.5 py-1 rounded-md">
+                Reactivo #{currentQ.id}
+              </span>
+              <button
+                onClick={() => {
+                  if (isAudioPlaying) {
+                    stopSpeak();
+                    setIsAudioPlaying(false);
+                  } else {
+                    setIsAudioPlaying(true);
+                    handleSpeak(`${currentQ.area}. ${currentQ.questionText}`);
+                  }
+                }}
+                className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+                  isAudioPlaying
+                    ? 'bg-[#00875A] text-white animate-pulse shadow-xs'
+                    : 'bg-slate-100 hover:bg-slate-200 text-[#0B2F64] border border-slate-200'
+                }`}
+                title="Escuchar reactivo en voz alta (es-CO)"
+              >
+                {isAudioPlaying ? (
+                  <>
+                    <VolumeX className="w-3.5 h-3.5" />
+                    <span>Detener Audio</span>
+                  </>
+                ) : (
+                  <>
+                    <Volume2 className="w-3.5 h-3.5 text-[#00875A]" />
+                    <span>Escuchar Pregunta</span>
+                  </>
+                )}
+              </button>
+            </div>
             <h3 className="text-base sm:text-lg font-bold text-[#0B2F64] leading-relaxed pt-1">
               {currentQ.questionText}
             </h3>

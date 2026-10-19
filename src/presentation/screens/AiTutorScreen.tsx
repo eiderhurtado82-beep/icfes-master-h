@@ -1,5 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Volume2, VolumeX, Bot } from 'lucide-react';
+import { handleSpeak, stopSpeak } from '../../lib/speech';
 
 interface Message {
   id: string;
@@ -31,8 +33,15 @@ export function AiTutorScreen({ onNavigateModule, initialPrompt }: AiTutorScreen
   ]);
   const [inputMessage, setInputMessage] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [speakingId, setSpeakingId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const initialPromptSent = useRef(false);
+
+  useEffect(() => {
+    return () => {
+      stopSpeak();
+    };
+  }, []);
 
   useEffect(() => {
     if (initialPrompt && !initialPromptSent.current) {
@@ -124,13 +133,48 @@ export function AiTutorScreen({ onNavigateModule, initialPrompt }: AiTutorScreen
                   }`}
                 >
                   <p>{msg.text}</p>
-                  <span
-                    className={`block text-[10px] mt-1 text-right ${
-                      msg.sender === 'user' ? 'text-blue-200' : 'text-slate-400'
-                    }`}
-                  >
-                    {msg.timestamp}
-                  </span>
+                  <div className="flex items-center justify-between mt-2 pt-1.5 border-t border-slate-200/60 gap-3">
+                    {msg.sender === 'ai' ? (
+                      <button
+                        onClick={() => {
+                          if (speakingId === msg.id) {
+                            stopSpeak();
+                            setSpeakingId(null);
+                          } else {
+                            setSpeakingId(msg.id);
+                            handleSpeak(msg.text);
+                          }
+                        }}
+                        className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded-lg transition-all cursor-pointer ${
+                          speakingId === msg.id
+                            ? 'bg-[#00875A] text-white shadow-2xs animate-pulse'
+                            : 'text-[#0B2F64] hover:bg-slate-200 bg-slate-100'
+                        }`}
+                        title="Escuchar explicación con voz colombiana (es-CO)"
+                      >
+                        {speakingId === msg.id ? (
+                          <>
+                            <VolumeX className="w-3 h-3" />
+                            <span>Detener Audio</span>
+                          </>
+                        ) : (
+                          <>
+                            <Volume2 className="w-3 h-3 text-[#00875A]" />
+                            <span>Escuchar Explicación</span>
+                          </>
+                        )}
+                      </button>
+                    ) : (
+                      <div />
+                    )}
+                    <span
+                      className={`block text-[10px] ${
+                        msg.sender === 'user' ? 'text-blue-200' : 'text-slate-400'
+                      }`}
+                    >
+                      {msg.timestamp}
+                    </span>
+                  </div>
                 </div>
               </motion.div>
             ))}
