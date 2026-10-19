@@ -158,6 +158,50 @@ export default function App() {
 
   // Screen routing
   const renderScreen = () => {
+    // Si intenta entrar a zonas protegidas sin iniciar sesión
+    const protectedScreens = [
+      'simulacro',
+      'simulador',
+      'simulador_real',
+      'evaluacion',
+      'examsimulator',
+      'tutor',
+      'errores',
+      'repaso',
+      'practica',
+      'cuestionario',
+    ];
+
+    if (!session && protectedScreens.includes(currentTab)) {
+      return (
+        <div className="max-w-md mx-auto mt-16 p-8 bg-white rounded-3xl border border-slate-200 shadow-sm text-center space-y-6 animate-in fade-in">
+          <div className="w-16 h-16 bg-amber-50 text-amber-600 rounded-2xl flex items-center justify-center mx-auto text-2xl shadow-inner">
+            🔒
+          </div>
+          <div className="space-y-2">
+            <h2 className="text-xl font-black text-[#0B2F64]">Acceso Exclusivo para Estudiantes</h2>
+            <p className="text-xs text-slate-500 leading-relaxed">
+              Para acceder a los simulacros oficiales, el Tutor IA y el Banco de Errores, debes iniciar sesión o crear tu cuenta en ICFES MASTER H 2.5.
+            </p>
+          </div>
+          <div className="space-y-2">
+            <button
+              onClick={() => handleNavigateModule('auth')}
+              className="w-full py-3.5 bg-[#0B2F64] text-white font-bold rounded-xl text-sm shadow-sm hover:bg-blue-900 transition-all cursor-pointer"
+            >
+              Iniciar Sesión / Registrarse
+            </button>
+            <button
+              onClick={() => handleNavigateModule('home')}
+              className="text-xs font-bold text-slate-400 hover:text-slate-600 cursor-pointer block w-full py-1.5"
+            >
+              Volver a Inicio
+            </button>
+          </div>
+        </div>
+      );
+    }
+
     switch (currentTab) {
       case 'home':
         return (
